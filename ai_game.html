@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>幻境</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c14;
+  --bg2: #11111f;
+  --bg3: #181828;
+  --surface: #1a1a2e;
+  --surface2: #20203a;
+  --border: rgba(180,160,255,0.12);
+  --border2: rgba(180,160,255,0.22);
+  --gold: #c9a96e;
+  --gold2: #e8c98a;
+  --purple: #9b7fe8;
+  --purple2: #b89ff0;
+  --purple3: #7055c8;
+  --text: #e8e0f0;
+  --text2: #a89cc0;
+  --text3: #6a5f88;
+  --red: #e07070;
+  --green: #70c890;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Serif SC', serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* 背景星点 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(180,160,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 15%, rgba(180,160,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 70%, rgba(200,170,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 80%, rgba(180,160,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 55%, rgba(180,160,255,0.3) 0%, transparent 100%),
+    radial-gradient(600px 400px at 50% 0%, rgba(80,50,140,0.18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── 顶栏 ── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: linear-gradient(180deg, rgba(12,12,20,0.98) 0%, rgba(12,12,20,0.85) 100%);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  z-index: 100;
+}
+
+.topbar-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(201,169,110,0.4);
+}
+
+.round-pill {
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* ── 主内容 ── */
+.main {
+  padding: 70px 0 160px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 欢迎屏 ── */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - 56px);
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.welcome-sigil {
+  font-size: 52px;
+  margin-bottom: 24px;
+  filter: drop-shadow(0 0 20px rgba(155,127,232,0.5));
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(155,127,232,0.5)); }
+  50% { filter: drop-shadow(0 0 35px rgba(155,127,232,0.8)); }
+}
+
+.welcome h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.welcome p {
+  font-size: 13px;
+  color: var(--text3);
+  line-height: 2;
+  max-width: 280px;
+  margin-bottom: 32px;
+}
+
+.welcome-step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 320px;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.welcome-step-num {
+  font-size: 10px;
+  color: var(--purple);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.welcome-step p {
+  font-size: 13px;
+  color: var(--text2);
+  margin: 0;
+  max-width: none;
+}
+
+/* ── 故事区 ── */
+.story-section {
+  padding: 0 16px 8px;
+}
+
+.story-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text3);
+  margin-bottom: 12px;
+  padding-left: 2px;
+}
+
+.story-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.story-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--purple3), transparent);
+}
+
+.story-text {
+  font-size: 14px;
+  line-height: 2.2;
+  color: var(--text);
+  font-weight: 300;
+}
+
+.story-text em {
+  color: var(--gold2);
+  font-style: italic;
+}
+
+/* ── 事件标题 ── */
+.event-title {
+  text-align: center;
+  margin: 20px 16px 8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  letter-spacing: 3px;
+  color: var(--purple2);
+  font-style: italic;
+}
+
+/* ── 选项区 ── */
+.choices-section {
+  padding: 16px 16px 8px;
+}
+
+.choices-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text3);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+
+.choice-btn {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  text-align: left;
+  color: var(--text2);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.choice-btn:active {
+  background: var(--surface2);
+  border-color: var(--purple3);
+  transform: scale(0.99);
+}
+
+.choice-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  color: var(--purple);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── 底部标签栏 ── */
+.bottom-tabs {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 72px;
+  background: rgba(12,12,20,0.97);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+.tab-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.tab-btn.active .tab-icon { color: var(--purple2); }
+.tab-btn.active .tab-label { color: var(--purple2); }
+
+.tab-icon { font-size: 20px; transition: 0.2s; }
+.tab-label { font-size: 10px; color: var(--text3); letter-spacing: 1px; font-family: 'Noto Serif SC', serif; }
+
+/* ── 状态面板 ── */
+.panel {
+  padding: 0 16px;
+  display: none;
+}
+
+.panel.active { display: block; }
+
+.panel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.panel-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+
+.panel-card-title {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-row:last-child { border-bottom: none; }
+
+.stat-key { font-size: 12px; color: var(--text2); }
+.stat-val { font-size: 12px; color: var(--text); font-weight: 500; }
+
+.npc-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.npc-item:last-child { border-bottom: none; }
+
+.npc-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.npc-name { font-size: 14px; color: var(--text); font-weight: 500; }
+.npc-mood { font-size: 11px; color: var(--purple2); background: rgba(155,127,232,0.1); padding: 2px 8px; border-radius: 20px; }
+.npc-relation { font-size: 12px; color: var(--text3); }
+
+.inv-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.inv-item:last-child { border-bottom: none; }
+.inv-icon { font-size: 18px; }
+.inv-name { font-size: 13px; color: var(--text2); }
+
+.empty-state {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--text3);
+  font-size: 13px;
+  line-height: 2;
+}
+
+/* ── 悬浮球 ── */
+.fab {
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple3), #3a2880);
+  border: 1px solid rgba(155,127,232,0.4);
+  box-shadow: 0 4px 20px rgba(80,50,180,0.4), 0 0 0 1px rgba(155,127,232,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 200;
+  transition: all 0.2s;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.fab:active { transform: scale(0.92); animation: none; }
+
+/* ── 设置抽屉 ── */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 300;
+  display: none;
+  backdrop-filter: blur(4px);
+}
+
+.drawer-overlay.open { display: block; }
+
+.drawer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px 40px;
+  z-index: 301;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+
+.drawer.open { transform: translateY(0); }
+
+.drawer-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.drawer-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.input-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text3);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.api-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  margin-bottom: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.api-input:focus { border-color: var(--purple3); }
+
+.rule-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  color: var(--text);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 13px;
+  line-height: 1.8;
+  min-height: 160px;
+  outline: none;
+  resize: none;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.rule-input:focus { border-color: var(--purple3); }
+
+.start-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--purple3), #3a2880);
+  border: 1px solid rgba(155,127,232,0.3);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  color: var(--text);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(80,50,180,0.3);
+}
+
+.start-btn:active { transform: scale(0.98); opacity: 0.9; }
+.start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── 加载中 ── */
+.loading-bar {
+  display: none;
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.loading-bar.show { display: block; }
+
+.loading-dots {
+  display: inline-flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--purple);
+  animation: dot-pulse 1.2s ease-in-out infinite;
+}
+
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dot-pulse {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+.loading-text {
+  font-size: 12px;
+  color: var(--text3);
+  letter-spacing: 2px;
+}
+
+/* ── 错误提示 ── */
+.error-toast {
+  position: fixed;
+  top: 70px;
+  left: 16px; right: 16px;
+  background: rgba(80,20,20,0.95);
+  border: 1px solid rgba(220,80,80,0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--red);
+  z-index: 400;
+  display: none;
+  line-height: 1.7;
+}
+
+.error-toast.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <span class="topbar-title">幻 境</span>
+  <span class="round-pill" id="round-label">待开始</span>
+</div>
+
+<!-- 错误提示 -->
+<div class="error-toast" id="error-toast"></div>
+
+<!-- 主内容 -->
+<div class="main" id="main-content">
+
+  <!-- 故事标签页 -->
+  <div id="tab-story" class="panel active">
+    <!-- 欢迎屏 -->
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-sigil">✦</div>
+      <h1>幻 境</h1>
+      <p>由 AI 驱动的文字冒险<br>一切皆有可能</p>
+      <div class="welcome-step">
+        <div class="welcome-step-num">STEP 01</div>
+        <p>点击右下角 ✦ 悬浮球，填入你的游戏规则</p>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-num">STEP 02</div>
+        <p>输入 DeepSeek API Key，点击开始游戏</p>
+      </div>
+      <div class="welcome-step">
+        <div class="welcome-step-num">STEP 03</div>
+        <p>点击选项继续故事，底部可查看状态与背包</p>
+      </div>
+    </div>
+
+    <!-- 游戏内容（初始隐藏） -->
+    <div id="game-screen" style="display:none;">
+      <div class="event-title" id="event-title" style="display:none;"></div>
+      <div class="story-section">
+        <div class="story-label">NARRATIVE</div>
+        <div class="story-card">
+          <div class="story-text" id="story-text"></div>
+        </div>
+      </div>
+
+      <div class="loading-bar" id="loading-bar">
+        <div class="loading-dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="loading-text">世界正在运转中</div>
+      </div>
+
+      <div class="choices-section" id="choices-section">
+        <div class="choices-label">YOUR MOVE</div>
+        <div id="choices-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 状态标签页 -->
+  <div id="tab-status" class="panel">
+    <div id="status-panel">
+      <div class="empty-state">✦<br><br>游戏开始后<br>角色状态将在此显示</div>
+    </div>
+  </div>
+
+  <!-- 人物标签页 -->
+  <div id="tab-npcs" class="panel">
+    <div id="npcs-panel">
+      <div class="empty-state">✦<br><br>遇见他人后<br>人物信息将在此显示</div>
+    </div>
+  </div>
+
+  <!-- 背包标签页 -->
+  <div id="tab-inventory" class="panel">
+    <div id="inv-panel">
+      <div class="empty-state">✦<br><br>获得物品后<br>背包内容将在此显示</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 底部标签栏 -->
+<div class="bottom-tabs">
+  <button class="tab-btn active" onclick="switchTab('story', this)">
+    <span class="tab-icon">📖</span>
+    <span class="tab-label">故事</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('status', this)">
+    <span class="tab-icon">🌙</span>
+    <span class="tab-label">状态</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('npcs', this)">
+    <span class="tab-icon">👤</span>
+    <span class="tab-label">人物</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('inventory', this)">
+    <span class="tab-icon">🎒</span>
+    <span class="tab-label">背包</span>
+  </button>
+</div>
+
+<!-- 悬浮球 -->
+<div class="fab" onclick="openDrawer()">✦</div>
+
+<!-- 设置抽屉 -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">游戏设定</div>
+
+  <label class="input-label">DEEPSEEK API KEY</label>
+  <input class="api-input" type="password" id="api-key" placeholder="sk-xxxxxxxxxxxxxxxx" />
+
+  <label class="input-label">游戏规则 / 世界背景</label>
+  <textarea class="rule-input" id="rule-input" placeholder="在这里粘贴你的游戏规则、世界背景、角色设定……&#10;&#10;AI 会根据规则生成故事和选项。"></textarea>
+
+  <button class="start-btn" id="start-btn" onclick="startGame()">✦ 开始游戏</button>
+</div>
+
+<script>
+// ── 状态 ──
+let apiKey = '';
+let systemPrompt = '';
+let history = [];
+let round = 0;
+let gameData = { player: null, npcs: [], inventory: [] };
+
+// ── 标签切换 ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── 抽屉 ──
+function openDrawer() {
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+// ── 错误提示 ──
+function showError(msg) {
+  const el = document.getElementById('error-toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ── 开始游戏 ──
+async function startGame() {
+  apiKey = document.getElementById('api-key').value.trim();
+  const rules = document.getElementById('rule-input').value.trim();
+
+  if (!apiKey) { showError('请填入 DeepSeek API Key'); return; }
+  if (!rules) { showError('请填入游戏规则'); return; }
+
+  systemPrompt = buildSystemPrompt(rules);
+  history = [];
+  round = 0;
+  gameData = { player: null, npcs: [], inventory: [] };
+
+  closeDrawer();
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+
+  await sendToAI('【游戏开始】请生成开局故事、初始状态和第一回合选项。');
+}
+
+// ── 构建系统提示 ──
+function buildSystemPrompt(rules) {
+  return `你是一个文字RPG游戏的主持人。请严格遵守以下游戏规则：
+
+${rules}
+
+【重要输出格式要求】
+每次回复必须且只能输出一个合法JSON对象，不要有任何其他文字、代码块标记或解释。格式如下：
+
+{
+  "round": 回合数字,
+  "event": "本回合事件标题，没有则为空字符串",
+  "story": "本回合故事正文，用小说语句书写，可以有换行用\\n表示",
+  "choices": ["选项一文字", "选项二文字", "选项三文字"],
+  "player": {
+    "name": "主角名字",
+    "state": "当前状态描述",
+    "stats": {"属性名": "值"}
+  },
+  "npcs": [
+    {"name": "NPC名字", "relation": "关系描述", "mood": "当前情绪"}
+  ],
+  "inventory": ["物品一", "物品二"]
+}
+
+choices至少2个，最多4个。inventory没有物品时为空数组[]。每次都要完整输出所有字段。`;
+}
+
+// ── 发送给AI ──
+async function sendToAI(userMsg) {
+  setLoading(true);
+
+  history.push({ role: 'user', content: userMsg });
+
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...history
+        ],
+        temperature: 0.85,
+        max_tokens: 1200
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const raw = data.choices?.[0]?.message?.content || '';
+
+    history.push({ role: 'assistant', content: raw });
+
+    // 解析JSON
+    const jsonStr = raw.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+    const parsed = JSON.parse(jsonStr);
+
+    round = parsed.round || round + 1;
+    renderGame(parsed);
+
+  } catch (e) {
+    showError('出错了：' + e.message);
+    // 回滚history
+    if (history[history.length - 1]?.role === 'user') history.pop();
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ── 渲染游戏内容 ──
+function renderGame(data) {
+  // 回合数
+  document.getElementById('round-label').textContent = `第 ${data.round} 回合`;
+
+  // 事件标题
+  const evEl = document.getElementById('event-title');
+  if (data.event) {
+    evEl.textContent = data.event;
+    evEl.style.display = 'block';
+  } else {
+    evEl.style.display = 'none';
+  }
+
+  // 故事
+  const storyEl = document.getElementById('story-text');
+  storyEl.innerHTML = data.story
+    .replace(/\n/g, '<br>')
+    .replace(/「(.*?)」/g, '「<em>$1</em>」');
+
+  // 选项
+  const choicesList = document.getElementById('choices-list');
+  choicesList.innerHTML = '';
+  const nums = ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ'];
+  (data.choices || []).forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span class="choice-num">${nums[i] || (i+1)}</span><span>${c}</span>`;
+    btn.onclick = () => chooseOption(c);
+    choicesList.appendChild(btn);
+  });
+
+  // 更新gameData
+  if (data.player) gameData.player = data.player;
+  if (data.npcs) gameData.npcs = data.npcs;
+  if (data.inventory) gameData.inventory = data.inventory;
+
+  renderStatusPanel();
+  renderNpcsPanel();
+  renderInventoryPanel();
+
+  // 切回故事tab
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-story').classList.add('active');
+  document.querySelector('.tab-btn').classList.add('active');
+
+  // 滚动到顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── 选择选项 ──
+function chooseOption(text) {
+  document.getElementById('choices-list').innerHTML = '';
+  sendToAI(text);
+}
+
+// ── 状态面板 ──
+function renderStatusPanel() {
+  const p = gameData.player;
+  if (!p) return;
+
+  let html = `<div class="panel-card">
+    <div class="panel-card-title">PLAYER STATUS</div>
+    <div class="stat-row"><span class="stat-key">名称</span><span class="stat-val">${p.name || '—'}</span></div>
+    <div class="stat-row"><span class="stat-key">状态</span><span class="stat-val">${p.state || '—'}</span></div>`;
+
+  if (p.stats) {
+    Object.entries(p.stats).forEach(([k, v]) => {
+      html += `<div class="stat-row"><span class="stat-key">${k}</span><span class="stat-val">${v}</span></div>`;
+    });
+  }
+
+  html += `</div>`;
+  document.getElementById('status-panel').innerHTML = html;
+}
+
+// ── NPC面板 ──
+function renderNpcsPanel() {
+  const npcs = gameData.npcs;
+  if (!npcs.length) return;
+
+  let html = `<div class="panel-card">
+    <div class="panel-card-title">CHARACTERS</div>`;
+
+  npcs.forEach(n => {
+    html += `<div class="npc-item">
+      <div class="npc-name-row">
+        <span class="npc-name">${n.name}</span>
+        <span class="npc-mood">${n.mood}</span>
+      </div>
+      <div class="npc-relation">${n.relation}</div>
+    </div>`;
+  });
+
+  html += `</div>`;
+  document.getElementById('npcs-panel').innerHTML = html;
+}
+
+// ── 背包面板 ──
+function renderInventoryPanel() {
+  const inv = gameData.inventory;
+  const icons = ['🔮','📜','🗝️','💎','🌿','⚗️','📿','🪬','🕯️','🧿'];
+
+  if (!inv.length) {
+    document.getElementById('inv-panel').innerHTML = '<div class="empty-state">✦<br><br>背包空空如也</div>';
+    return;
+  }
+
+  let html = `<div class="panel-card"><div class="panel-card-title">INVENTORY</div>`;
+  inv.forEach((item, i) => {
+    html += `<div class="inv-item">
+      <span class="inv-icon">${icons[i % icons.length]}</span>
+      <span class="inv-name">${item}</span>
+    </div>`;
+  });
+  html += `</div>`;
+  document.getElementById('inv-panel').innerHTML = html;
+}
+
+// ── 加载状态 ──
+function setLoading(show) {
+  document.getElementById('loading-bar').classList.toggle('show', show);
+  document.getElementById('choices-section').style.opacity = show ? '0.3' : '1';
+  document.getElementById('choices-section').style.pointerEvents = show ? 'none' : 'auto';
+}
+
+// 读取本地存储的key
+window.onload = () => {
+  const saved = localStorage.getItem('ds_api_key');
+  if (saved) document.getElementById('api-key').value = saved;
+};
+
+document.getElementById('api-key').addEventListener('change', e => {
+  localStorage.setItem('ds_api_key', e.target.value);
+});
+</script>
+</body>
+</html>
